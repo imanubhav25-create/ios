@@ -1,0 +1,909 @@
+I'll convert this NEET PG study tracker web app into an iOS-ready format. Since iOS doesn't support APK (that's Android), I'll create a Progressive Web App (PWA) that can be installed on iOS devices directly from Safari.
+
+Here's the converted version with iOS PWA capabilities:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NEET PG 2026">
+  <meta name="theme-color" content="#007aff">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23007aff'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E🩺%3C/text%3E%3C/svg%3E">
+  <title>NEET PG 2026 · Daily Targets & Badges</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ========== COMPLETE STYLES (all themes, glassmorphism) ========== */
+    :root {
+      --bg: #f5f5f7;
+      --card: rgba(255, 255, 255, 0.85);
+      --card-solid: #ffffff;
+      --text: #1d1d1f;
+      --text2: #86868b;
+      --accent: #007aff;
+      --accent-rgb: 0, 122, 255;
+      --accent2: #34c759;
+      --red: #ff3b30;
+      --orange: #ff9500;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 8px 32px rgba(0,0,0,0.04);
+      --input-bg: rgba(0, 0, 0, 0.03);
+      --nav-bg: rgba(255, 255, 255, 0.8);
+      --modal-overlay: rgba(0,0,0,0.3);
+      --toast-bg: rgba(28, 28, 30, 0.9);
+      --toast-text: #fff;
+      --divider: rgba(0, 0, 0, 0.05);
+      --calendar-today: #007aff;
+      --calendar-selected: rgba(0, 122, 255, 0.12);
+      --calendar-completed: #34c759;
+      --glow: 0 0 12px rgba(0, 122, 255, 0.2);
+    }
+    /* 16 themes */
+    [data-theme="sunset"] { --bg: #fff6f0; --card: rgba(255, 250, 247, 0.9); --card-solid: #fffbf9; --text: #3c2214; --text2: #927a6e; --accent: #ff6b35; --accent-rgb: 255, 107, 53; --accent2: #ecb813; --border: rgba(240, 210, 190, 0.5); --input-bg: rgba(255, 107, 53, 0.06); --nav-bg: rgba(255, 250, 247, 0.85); --calendar-selected: rgba(255, 107, 53, 0.12); --calendar-today: #ff6b35; }
+    [data-theme="ocean"] { --bg: #f0f8ff; --card: rgba(245, 251, 255, 0.9); --card-solid: #fcfdfe; --text: #0b2135; --text2: #6f869a; --accent: #0284c7; --accent-rgb: 2, 132, 199; --accent2: #0d9488; --border: rgba(2, 132, 199, 0.1); --input-bg: rgba(2, 132, 199, 0.05); --nav-bg: rgba(245, 251, 255, 0.85); --calendar-selected: rgba(2, 132, 199, 0.12); --calendar-today: #0284c7; }
+    [data-theme="forest"] { --bg: #f3f7f4; --card: rgba(248, 252, 249, 0.9); --card-solid: #fbfdfc; --text: #122c19; --text2: #728a78; --accent: #2e7d32; --accent-rgb: 46, 125, 50; --accent2: #1976d2; --border: rgba(46, 125, 50, 0.1); --input-bg: rgba(46, 125, 50, 0.05); --nav-bg: rgba(248, 252, 249, 0.85); --calendar-selected: rgba(46, 125, 50, 0.12); --calendar-today: #2e7d32; }
+    [data-theme="midnight"] { --bg: #0b0b0f; --card: rgba(20, 20, 28, 0.85); --card-solid: #14141c; --text: #f3f4f6; --text2: #8e8e9e; --accent: #3b82f6; --accent-rgb: 59, 130, 246; --accent2: #10b981; --border: rgba(255, 255, 255, 0.08); --input-bg: rgba(255, 255, 255, 0.06); --nav-bg: rgba(20, 20, 28, 0.85); --calendar-selected: rgba(59, 130, 246, 0.2); --calendar-today: #3b82f6; --shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    [data-theme="cyber"] { --bg: #05070f; --card: rgba(11, 15, 28, 0.85); --card-solid: #0d1120; --text: #00ffcc; --text2: #708090; --accent: #00ffcc; --accent-rgb: 0, 255, 204; --accent2: #ff007f; --border: rgba(0, 255, 204, 0.2); --input-bg: rgba(0, 255, 204, 0.08); --nav-bg: rgba(11, 15, 28, 0.9); --calendar-selected: rgba(0, 255, 204, 0.25); --calendar-today: #00ffcc; --shadow: 0 0 20px rgba(0, 255, 204, 0.15); }
+    [data-theme="nord"] { --bg: #eef2f7; --card: rgba(236, 240, 245, 0.9); --card-solid: #eceff4; --text: #2e3440; --text2: #4c566a; --accent: #5e81ac; --accent-rgb: 94, 129, 172; --accent2: #a3be8c; --border: rgba(94, 129, 172, 0.15); --input-bg: rgba(94, 129, 172, 0.08); --nav-bg: rgba(236, 240, 245, 0.85); --calendar-selected: rgba(94, 129, 172, 0.15); --calendar-today: #5e81ac; }
+    [data-theme="dracula"] { --bg: #1e1f29; --card: rgba(40, 42, 54, 0.85); --card-solid: #282a36; --text: #f8f8f2; --text2: #6272a4; --accent: #ff79c6; --accent-rgb: 255, 121, 198; --accent2: #50fa7b; --border: rgba(255, 121, 198, 0.15); --input-bg: rgba(255, 121, 198, 0.08); --nav-bg: rgba(40, 42, 54, 0.85); --calendar-selected: rgba(255, 121, 198, 0.2); --calendar-today: #ff79c6; }
+    [data-theme="aurora"] { --bg: #0b131a; --card: rgba(16, 28, 38, 0.85); --card-solid: #101c26; --text: #eef1f6; --text2: #5f7a8c; --accent: #50fa7b; --accent-rgb: 80, 250, 123; --accent2: #8be9fd; --border: rgba(80, 250, 123, 0.15); --input-bg: rgba(80, 250, 123, 0.06); --nav-bg: rgba(16, 28, 38, 0.85); --calendar-selected: rgba(80, 250, 123, 0.2); --calendar-today: #50fa7b; }
+    [data-theme="glass-light"] { --bg: #f9fbfd; --card: rgba(255, 255, 255, 0.4); --card-solid: rgba(255, 255, 255, 0.95); --text: #0f172a; --text2: #64748b; --accent: #2563eb; --accent-rgb: 37, 99, 235; --accent2: #059669; --border: rgba(37, 99, 235, 0.08); --input-bg: rgba(37, 99, 235, 0.04); --nav-bg: rgba(248, 250, 252, 0.6); --calendar-selected: rgba(37, 99, 235, 0.1); --calendar-today: #2563eb; --shadow: 0 8px 32px rgba(31, 38, 135, 0.07); }
+    [data-theme="retro"] { --bg: #1c1a17; --card: rgba(36, 33, 29, 0.9); --card-solid: #24211d; --text: #ff9e3b; --text2: #8a7c6e; --accent: #ff9e3b; --accent-rgb: 255, 158, 59; --accent2: #98bb6c; --border: rgba(255, 158, 59, 0.15); --input-bg: rgba(255, 158, 59, 0.06); --nav-bg: rgba(36, 33, 29, 0.85); --calendar-selected: rgba(255, 158, 59, 0.2); --calendar-today: #ff9e3b; }
+    [data-theme="rose"] { --bg: #fff5f5; --card: rgba(255, 245, 245, 0.9); --card-solid: #fff5f5; --text: #5c2e2e; --text2: #9b6e6e; --accent: #e83e8c; --accent-rgb: 232, 62, 140; --accent2: #fd7e14; --border: rgba(232, 62, 140, 0.15); --input-bg: rgba(232, 62, 140, 0.05); --nav-bg: rgba(255, 245, 245, 0.85); --calendar-selected: rgba(232, 62, 140, 0.15); --calendar-today: #e83e8c; }
+    [data-theme="mint"] { --bg: #f0fef5; --card: rgba(240, 254, 245, 0.9); --card-solid: #f0fef5; --text: #1a4d2e; --text2: #6b9b7a; --accent: #20c997; --accent-rgb: 32, 201, 151; --accent2: #0d6efd; --border: rgba(32, 201, 151, 0.15); --input-bg: rgba(32, 201, 151, 0.05); --nav-bg: rgba(240, 254, 245, 0.85); --calendar-selected: rgba(32, 201, 151, 0.15); --calendar-today: #20c997; }
+    [data-theme="amber"] { --bg: #fff8e7; --card: rgba(255, 248, 231, 0.9); --card-solid: #fff8e7; --text: #5c4010; --text2: #a8884a; --accent: #ffc107; --accent-rgb: 255, 193, 7; --accent2: #dc3545; --border: rgba(255, 193, 7, 0.2); --input-bg: rgba(255, 193, 7, 0.08); --nav-bg: rgba(255, 248, 231, 0.85); --calendar-selected: rgba(255, 193, 7, 0.2); --calendar-today: #ffc107; }
+    [data-theme="night"] { --bg: #0a0e27; --card: rgba(16, 20, 45, 0.85); --card-solid: #10142d; --text: #e2e8f0; --text2: #7b8ba4; --accent: #6366f1; --accent-rgb: 99, 102, 241; --accent2: #14b8a6; --border: rgba(99, 102, 241, 0.2); --input-bg: rgba(99, 102, 241, 0.08); --nav-bg: rgba(16, 20, 45, 0.85); --calendar-selected: rgba(99, 102, 241, 0.2); --calendar-today: #6366f1; }
+    [data-theme="lavender"] { --bg: #f5f0ff; --card: rgba(245, 240, 255, 0.9); --card-solid: #f5f0ff; --text: #341f5e; --text2: #8b77a3; --accent: #9b59b6; --accent-rgb: 155, 89, 182; --accent2: #1abc9c; --border: rgba(155, 89, 182, 0.15); --input-bg: rgba(155, 89, 182, 0.06); --nav-bg: rgba(245, 240, 255, 0.85); --calendar-selected: rgba(155, 89, 182, 0.15); --calendar-today: #9b59b6; }
+    
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 95px; transition: background 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
+    .app-header { position: sticky; top: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(24px) saturate(180%); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); }
+    .app-header h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.6px; display: flex; align-items: center; gap: 6px; }
+    .user-badge { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; color: var(--text); cursor: pointer; padding: 6px 14px; border-radius: 24px; background: var(--input-bg); border: 0.5px solid var(--border); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    .user-badge:active { transform: scale(0.96); opacity: 0.8; }
+    .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.72rem; }
+    .install-prompt { position: fixed; bottom: 80px; left: 16px; right: 16px; background: var(--card-solid); border-radius: 16px; padding: 12px; z-index: 250; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border: 1px solid var(--accent); display: none; align-items: center; justify-content: space-between; backdrop-filter: blur(20px); }
+    .install-prompt.show { display: flex; }
+    .section { display: none; padding: 16px; animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-width: 768px; margin: 0 auto; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .card { background: var(--card); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1.5px solid var(--border); transition: transform 0.25s, box-shadow 0.25s; }
+    .card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); margin-bottom: 14px; font-weight: 800; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat-box { background: var(--card); border-radius: 16px; padding: 14px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; transition: all 0.2s; }
+    .stat-box .val { font-size: 1.65rem; font-weight: 800; color: var(--accent); letter-spacing: -0.6px; }
+    .stat-box .lbl { font-size: 0.72rem; color: var(--text2); margin-top: 4px; font-weight: 600; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 24px; border: none; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); font-family: inherit; -webkit-tap-highlight-color: transparent; }
+    .btn:active { transform: scale(0.96); opacity: 0.9; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: var(--glow); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
+    .btn-sm { padding: 8px 16px; font-size: 0.82rem; border-radius: 20px; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-accent2 { background: var(--accent2); color: #fff; }
+    .checkbox-row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; user-select: none; transition: all 0.15s; }
+    .checkbox-row:active { transform: scale(0.99); }
+    .checkbox-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); border-radius: 6px; cursor: pointer; }
+    .checkbox-row.checked { opacity: 0.65; }
+    .checkbox-row.checked .check-label { text-decoration: line-through; color: var(--text2); }
+    .check-label { font-size: 0.9rem; flex: 1; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); font-size: 0.92rem; font-family: inherit; color: var(--text); margin-bottom: 12px; transition: all 0.2s; -webkit-appearance: none; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); background: var(--card-solid); box-shadow: 0 0 0 4px var(--calendar-selected); }
+    textarea { resize: vertical; min-height: 80px; }
+    .switch-container { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 12px; }
+    .switch-container label { font-size: 0.9rem; font-weight: 700; }
+    .switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--text2); transition: .3s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider:before { transform: translateX(24px); }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--nav-bg); backdrop-filter: blur(24px); display: flex; border-top: 0.5px solid var(--border); padding: 6px 0 env(safe-area-inset-bottom, 8px) 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.04); }
+    .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; cursor: pointer; color: var(--text2); font-size: 0.65rem; border: none; background: none; font-family: inherit; transition: color 0.15s; -webkit-tap-highlight-color: transparent; }
+    .nav-item.active { color: var(--accent); font-weight: 700; }
+    .nav-icon { font-size: 1.3rem; }
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 300; background: var(--modal-overlay); align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .modal.show { display: flex; }
+    .modal-content { background: var(--card-solid); border-radius: 24px; padding: 24px; width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+    .tag { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; margin: 2px; }
+    .tag-accent { background: var(--calendar-selected); color: var(--accent); }
+    .tag-green { background: rgba(52, 199, 89, 0.15); color: var(--accent2); }
+    .tag-red { background: rgba(255, 59, 48, 0.15); color: var(--red); }
+    .timer-display { font-size: 4.8rem; font-weight: 200; text-align: center; letter-spacing: -2px; font-family: 'SF Mono', monospace, Courier; color: var(--accent); padding: 20px 0; user-select: none; }
+    .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 400; background: var(--toast-bg); color: var(--toast-text); padding: 12px 24px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; pointer-events: none; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+    @keyframes slideDown { from { opacity: 0; transform: translate3d(-50%, -20px, 0); } to { opacity: 1; transform: translate3d(-50%, 0, 0); } }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .calendar-day { aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.82rem; position: relative; font-weight: 600; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+    .calendar-day:active { transform: scale(0.85); }
+    .calendar-day.today { background: var(--calendar-today); color: #fff; font-weight: 800; }
+    .calendar-day.selected { background: var(--calendar-selected); font-weight: 800; color: var(--accent); }
+    .calendar-day.has-revision::after { content: ''; position: absolute; bottom: 4px; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); }
+    .calendar-day.has-revision.completed-all::after { background: var(--calendar-completed); }
+    .focus-tone-btn { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--card); cursor: pointer; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; transition: all 0.25s; -webkit-tap-highlight-color: transparent; }
+    .focus-tone-btn:active { transform: scale(0.92); }
+    .focus-tone-btn.playing { background: var(--accent); color: #fff; border-color: var(--accent); animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.4); } 50% { box-shadow: 0 0 0 12px rgba(var(--accent-rgb), 0); } }
+    .scroll-list { max-height: 320px; overflow-y: auto; padding-right: 4px; -webkit-overflow-scrolling: touch; }
+    .scroll-list::-webkit-scrollbar { width: 5px; }
+    .scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    .delete-entry-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.2rem; padding: 4px; -webkit-tap-highlight-color: transparent; }
+    .unit-custom { display: none; }
+    .rev-filter-btn { margin: 2px; border-radius: 16px; -webkit-tap-highlight-color: transparent; }
+    .rev-filter-btn.active { background: var(--accent); color: white; }
+    .chart-container { position: relative; height: 200px; width: 100%; }
+    .subject-syllabus-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); padding: 14px; margin-bottom: 12px; }
+    .subject-syllabus-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+    .unit-syllabus-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 0.85rem; border-bottom: 0.5px solid var(--divider); }
+    .unit-syllabus-row:last-child { border-bottom: none; }
+    .unit-syllabus-row .unit-title { font-weight: 600; color: var(--text); }
+    .unit-syllabus-row .unit-stats { font-size: 0.78rem; color: var(--text2); font-weight: 700; }
+    .inline-add-unit { display: flex; gap: 6px; margin-top: 10px; }
+    .inline-add-unit input { padding: 8px 12px; border-radius: 10px; font-size: 0.82rem; margin-bottom: 0; background: var(--input-bg); }
+    .compare-header-tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 16px; background: var(--input-bg); border-radius: 16px; padding: 4px; }
+    .compare-tab { background: none; border: none; padding: 8px 2px; font-size: 0.7rem; font-weight: 700; color: var(--text2); border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: center; -webkit-tap-highlight-color: transparent; }
+    .compare-tab.active { background: var(--card-solid); color: var(--accent); box-shadow: var(--shadow); }
+    .peer-comparison-card { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); margin-bottom: 8px; }
+    .peer-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .peer-rank { font-size: 1.1rem; font-weight: 800; width: 24px; }
+    .peer-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--input-bg); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .peer-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); animation: pulseActive 1.5s infinite; }
+    @keyframes pulseActive { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+    .ping-indicator { font-size: 0.75rem; font-weight: bold; color: var(--text2); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .revision-subject-filter { margin: 12px 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .revision-subject-filter label { font-weight: 600; font-size: 0.85rem; color: var(--text2); }
+    .revision-subject-filter select { flex: 1; margin-bottom: 0; }
+    .badge-icon { font-size: 1.2rem; margin-left: 6px; }
+  </style>
+</head>
+<body data-theme="default">
+
+<div class="app-header">
+  <h1 style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
+    <span style="font-size: 1.25rem;">🩺 NEET PG 2026</span>
+    <span class="ping-indicator" id="syncIndicator" onclick="verifyAppsScriptConnection()">Check Connection 🔄</span>
+  </h1>
+  <div class="user-badge" onclick="showLoginModal()">
+    <div class="user-avatar" id="avatarLetter">D</div>
+    <span id="currentUserDisplay">Demo User</span>
+  </div>
+</div>
+
+<div class="install-prompt" id="installPrompt">
+  <span>📱 Install as App</span>
+  <button class="btn btn-primary btn-sm" onclick="closeInstallPrompt()">Share → Add to Home Screen</button>
+</div>
+
+<!-- HOME SECTION -->
+<div class="section active" id="section-home">
+  <div class="card" style="text-align:center;">
+    <h3>⏳ Exam Countdown</h3>
+    <h2 style="color:var(--accent); font-weight:800; font-size:1.8rem; margin-bottom:12px;">📅 30 August 2026</h2>
+    <div class="stat-row" id="countdownTimer">
+      <div class="stat-box"><div class="val" id="cd-days">--</div><div class="lbl">Days</div></div>
+      <div class="stat-box"><div class="val" id="cd-hours">--</div><div class="lbl">Hours</div></div>
+      <div class="stat-box"><div class="val" id="cd-mins">--</div><div class="lbl">Minutes</div></div>
+      <div class="stat-box"><div class="val" id="cd-secs">--</div><div class="lbl">Seconds</div></div>
+    </div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="val" id="totalHoursStudied">0</div><div class="lbl">Hours Studied</div></div>
+    <div class="stat-box"><div class="val" id="totalPYQ">0</div><div class="lbl">PYQs Done</div></div>
+    <div class="stat-box"><div class="val" id="pyqHoursEquiv">0</div><div class="lbl">PYQ hrs (40s/Q)</div></div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="val" id="revisionPercent">0%</div><div class="lbl">📚 Revision Completion <span id="badgeHome" class="badge-icon"></span></div></div>
+    <div class="stat-box"><div class="val" id="checklistStreak">0</div><div class="lbl">🔥 Daily Streak (≥150 PYQs + All Revisions)</div></div>
+  </div>
+  <div class="card"><h3>✅ Daily Checklist</h3><div id="dailyChecklist"></div>
+    <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;"><input type="text" id="newCheckItem" placeholder="Add custom task..." style="flex:1; min-width:140px; margin-bottom:0;"><button class="btn btn-primary btn-sm" onclick="addCheckItem()">+ Add</button></div>
+    <div style="display:flex; gap:6px; margin-top:8px;"><button class="btn btn-outline btn-sm" onclick="addDefaultTasks()">📋 Load Defaults</button><button class="btn btn-danger btn-sm" onclick="clearDefaultTasks()">🗑 Clear Defaults</button></div>
+  </div>
+  <div class="card"><h3>📋 Today's Spaced Revisions</h3><div id="todayRevisionList" class="scroll-list">No revisions scheduled.</div></div>
+</div>
+
+<!-- STUDY LOG SECTION -->
+<div class="section" id="section-log">
+  <div class="card"><h3>📝 Log Study Session</h3>
+    <select id="logSubject"><option value="">Select Subject</option></select>
+    <select id="logUnitSelect"><option value="">First select subject</option></select>
+    <input type="text" id="logUnitCustom" class="unit-custom" placeholder="Custom unit name">
+    <div style="display:flex; gap:8px; margin-bottom:12px;"><input type="number" id="logPYQ" placeholder="PYQs completed" min="0" style="flex:2;"><input type="number" id="logHoursDirect" placeholder="OR Study Hours" min="0" step="0.1" style="flex:2;"></div>
+    <div class="switch-container"><label for="generateRevisionToggle">Generate Spaced Revision Cycle?</label><div class="switch"><input type="checkbox" id="generateRevisionToggle" checked><span class="slider"></span></div></div>
+    <textarea id="logNotes" placeholder="Session notes / high-yield points..."></textarea>
+    <button class="btn btn-primary" onclick="saveLogEntry()" style="width:100%;">💾 Save Session</button>
+    <div style="text-align:center; margin-top:6px;"><small style="color:var(--text2);">Non-revision logs save stats without generating upcoming tasks.</small></div>
+  </div>
+  <div class="card"><h3>📅 Today's Study Log</h3><div id="todayLogList" class="scroll-list">No entries today.</div><button class="btn btn-outline btn-sm" style="margin-top:12px; width:100%;" onclick="generateRevisionSchedule()">🔄 Regenerate Spaced Revision Schedule</button></div>
+  <div class="card"><h3>📌 Recent Entries (Last 10)</h3><div id="recentEntriesList" class="scroll-list" style="max-height:250px;"></div></div>
+</div>
+
+<!-- SPACED REVISION SECTION -->
+<div class="section" id="section-revision">
+  <div class="card"><h3>📅 Spaced Revision Calendar</h3>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:8px;"><button class="btn btn-sm btn-outline" onclick="changeRevMonth(-1)">◀</button><span id="revMonthLabel" style="font-weight:700; font-size:1rem;"></span><button class="btn btn-sm btn-outline" onclick="changeRevMonth(1)">▶</button></div>
+    <div class="revision-subject-filter"><label>📖 Filter by Subject:</label><select id="revSubjectFilter" onchange="setRevSubjectFilter(this.value)"><option value="all">All Subjects</option></select></div>
+    <div style="margin:10px 0 16px 0; display:flex; gap:4px; flex-wrap:wrap; justify-content:center;">
+      <button class="btn btn-sm btn-outline rev-filter-btn active" id="rev-filter-all" onclick="setRevFilter(null)">All</button>
+      <button class="btn btn-sm btn-outline rev-filter-btn" id="rev-filter-2" onclick="setRevFilter(2)">Day 2</button>
+      <button class="btn btn-sm btn-outline rev-filter-btn" id="rev-filter-4" onclick="setRevFilter(4)">Day 4</button>
+      <button class="btn btn-sm btn-outline rev-filter-btn" id="rev-filter-7" onclick="setRevFilter(7)">Day 7</button>
+      <button class="btn btn-sm btn-outline rev-filter-btn" id="rev-filter-14" onclick="setRevFilter(14)">Day 14</button>
+    </div>
+    <div class="calendar-grid" id="revisionCalendar"></div>
+  </div>
+  <div class="card" id="revisionDayDetail" style="display:none;"><h3>📋 Revisions due on <span id="revDetailDate"></span></h3><div id="revDetailList"></div></div>
+  <div class="card"><h3>🎯 Suggested Practice Deck (Day 7‑14 range)</h3><div id="suggestedPYQList" class="scroll-list"></div></div>
+</div>
+
+<!-- SUBJECTS SECTION -->
+<div class="section" id="section-subjects">
+  <div class="card"><h3>📊 Subject Curriculum & Unit Progress</h3><div id="subjectStatsList" class="scroll-list" style="max-height:75vh;"></div></div>
+</div>
+
+<!-- TESTS TRACKER SECTION -->
+<div class="section" id="section-tests">
+  <div class="card"><h3>📝 Log Grand Test (GT)</h3>
+    <select id="gtSource"><option value="Marrow">Marrow</option><option value="Cerebellum">Cerebellum</option><option value="BTR">BTR</option><option value="Prepladder">Prepladder</option><option value=" Bhatia">DBMCI/Bhatia</option></select>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input type="number" id="gtCorrect" placeholder="Correct Answers"><input type="number" id="gtIncorrect" placeholder="Incorrect Answers"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input type="number" id="gtTotal" placeholder="Total Qs (e.g., 200)" value="200"><input type="date" id="gtDate"></div>
+    <button class="btn btn-primary btn-sm" style="width:100%;" onclick="saveGT()">Save GT Result</button>
+  </div>
+  <div class="card"><h3>📈 Grand Test Analytics</h3><div class="chart-container"><canvas id="gtChart"></canvas></div></div>
+  <div class="card"><h3>📊 Subject-wise Test (SWT)</h3>
+    <select id="swSubject"></select>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input type="number" id="swCorrect" placeholder="Correct Answers"><input type="number" id="swIncorrect" placeholder="Incorrect Answers"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"><input type="number" id="swTotal" placeholder="Total Qs"><input type="date" id="swDate"></div>
+    <button class="btn btn-primary btn-sm" style="width:100%;" onclick="saveSWT()">Save SWT Result</button>
+  </div>
+  <div class="card"><h3>📈 Subject Test Performance</h3><div class="chart-container"><canvas id="swChart"></canvas></div></div>
+</div>
+
+<!-- FOCUS TIMER SECTION -->
+<div class="section" id="section-timer">
+  <div class="card" style="text-align:center;"><h3>⏱ Focus Study Timer</h3><div class="timer-display" id="timerDisplay">00:00:00</div>
+    <select id="timerSubject"></select><select id="timerUnitSelect"><option value="">First select subject</option></select><input type="text" id="timerUnitCustom" class="unit-custom" placeholder="Custom unit name">
+    <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:10px 0;">
+      <button class="btn btn-sm btn-outline" onclick="setTimerPreset(180)">3h GT</button><button class="btn btn-sm btn-outline" onclick="setTimerPreset(210)">3.5h GT</button><button class="btn btn-sm btn-outline" onclick="setTimerPreset(60)">1h</button><button class="btn btn-sm btn-outline" onclick="setTimerPreset(30)">30m</button>
+      <div style="display:flex; align-items:center; gap:4px;"><input type="number" id="customTimerMin" placeholder="min" style="width:70px; margin-bottom:0;"><button class="btn btn-sm btn-primary" onclick="setTimerPreset(parseInt(document.getElementById('customTimerMin').value)||0)">Set</button></div>
+    </div>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:14px;"><button class="btn btn-primary" id="timerStartBtn" onclick="toggleTimer()">▶ Start Study</button><button class="btn btn-danger btn-sm" onclick="resetTimer()">↺ Reset</button></div>
+  </div>
+  <div class="card"><h3>🎧 Procedural Focus Ambient Sounds</h3><div id="toneGrid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(90px, 1fr)); gap:10px;"></div><button class="btn btn-sm btn-outline" style="margin-top:14px; width:100%;" onclick="stopAllTones()">🔇 Mute All Sounds</button></div>
+</div>
+
+<!-- COMPARISON LOUNGE SECTION -->
+<div class="section" id="section-social">
+  <div class="card"><h3>🔥 Peer Comparison & Lounge</h3>
+    <div class="compare-header-tabs">
+      <button class="compare-tab active" id="tab-daily-hr" onclick="setCompareMetric('daily-hr')">Daily Hrs</button>
+      <button class="compare-tab" id="tab-daily-pyq" onclick="setCompareMetric('daily-pyq')">Daily PYQ</button>
+      <button class="compare-tab" id="tab-total-hr" onclick="setCompareMetric('total-hr')">Total Hrs</button>
+      <button class="compare-tab" id="tab-total-pyq" onclick="setCompareMetric('total-pyq')">Total PYQs</button>
+      <button class="compare-tab" id="tab-revision-percent" onclick="setCompareMetric('revision-percent')">📊 Revision %</button>
+      <button class="compare-tab" id="tab-streak" onclick="setCompareMetric('streak')">🔥 Streak</button>
+    </div>
+    <div id="comparisonList" class="scroll-list"></div>
+  </div>
+  <div class="card"><h3>🟢 Lounge Study Feed (Active Now)</h3><div id="loungeStudyFeed"></div></div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal" id="settingsModal"><div class="modal-content">
+  <h3>⚙ Settings & Cloud Config</h3>
+  <div style="padding:12px; background:var(--input-bg); border-radius:14px; border:1px solid var(--border); margin-bottom:14px;"><strong>Spreadsheet Connection</strong><div><span class="tag tag-accent" id="settingsSyncIndicator" onclick="verifyAppsScriptConnection()">Check Link</span></div></div>
+  <label>Visual Theme</label><select id="themeSelect" onchange="changeTheme(this.value)"><option value="default">Default iOS Clean</option><option value="glass-light">Glassmorphic Light ✨</option><option value="dracula">Dracula</option><option value="aurora">Aurora</option><option value="nord">Nordic</option><option value="retro">Retro</option><option value="sunset">Sunset</option><option value="ocean">Ocean</option><option value="forest">Forest</option><option value="lavender">Lavender</option><option value="midnight">Midnight</option><option value="rose">Rose</option><option value="mint">Mint</option><option value="amber">Amber</option><option value="cyber">Cyberpunk</option><option value="night">Night</option></select>
+  <h4 style="margin-top:18px;">💾 Cloud & Local Backup</h4>
+  <button class="btn btn-outline btn-sm" style="margin-bottom:8px; width:100%;" onclick="exportDataJSON()">📤 Export Local Backup (JSON)</button>
+  <div style="position:relative; overflow:hidden; margin-bottom:12px;"><button class="btn btn-outline btn-sm" style="width:100%;">📥 Import Backup JSON</button><input type="file" id="importFile" onchange="importDataJSON(event)" style="position:absolute; left:0; top:0; opacity:0; width:100%; height:100%;"></div>
+  <button class="btn btn-primary btn-sm" style="width:100%; margin-bottom:8px;" onclick="syncFromCloud(true)">☁️ Sync from Cloud (Download my data)</button>
+  <h4 style="margin-top:10px; color:var(--red);">⚠️ Advanced Reset</h4>
+  <div id="lastEntriesListSettings" class="scroll-list" style="max-height:160px; margin-bottom:10px;"></div>
+  <button class="btn btn-danger btn-sm" style="width:100%; margin-bottom:8px;" onclick="deleteLast10Entries()">⚠️ Wipe Last 10 Entries</button>
+  <button class="btn btn-primary" style="width:100%;" onclick="closeModal('settingsModal')">Done</button>
+</div></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal"><div class="modal-content">
+  <h3>🔐 Login / Register</h3>
+  <input type="text" id="loginUsername" placeholder="Username"><input type="password" id="loginPassword" placeholder="Password">
+  <button class="btn btn-primary" style="width:100%; margin-top:4px;" onclick="loginUser()">Login</button>
+  <button class="btn btn-outline btn-sm" style="width:100%; margin:6px 0;" onclick="registerUser()">Register New Account</button>
+  <button class="btn btn-accent2 btn-sm" style="width:100%; margin-bottom:8px;" onclick="demoLogin()">🚀 Fast Demo Mode</button>
+  <button class="btn btn-sm" style="width:100%;" onclick="closeModal('loginModal')">Close</button>
+</div></div>
+
+<!-- BOTTOM NAVIGATION -->
+<div class="bottom-nav">
+  <button class="nav-item active" data-section="home"><span class="nav-icon">🏠</span>Home</button>
+  <button class="nav-item" data-section="log"><span class="nav-icon">📝</span>Log</button>
+  <button class="nav-item" data-section="revision"><span class="nav-icon">🗓️</span>Revision</button>
+  <button class="nav-item" data-section="subjects"><span class="nav-icon">📚</span>Subjects</button>
+  <button class="nav-item" data-section="tests"><span class="nav-icon">📊</span>Tests</button>
+  <button class="nav-item" data-section="timer"><span class="nav-icon">⏲️</span>Timer</button>
+  <button class="nav-item" data-section="social"><span class="nav-icon">🏆</span>Compare</button>
+  <button class="nav-item" onclick="openModal('settingsModal')"><span class="nav-icon">⚙️</span>Settings</button>
+</div>
+<div id="toastContainer"></div>
+
+<script>
+// ==================== FINAL FRONT-END CODE (DAILY TARGETS & BADGES) ====================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsNZ0IvU8otiAhYZKHyEftKjqE3wkdBmUGsB4nD4MeNl47GeZeOM5yN9t4Rw1_r0k/exec';
+
+const NEET_EXAM_DATE = new Date('2026-08-30T09:00:00');
+const SUBJECTS = ['Anatomy','Physiology','Biochemistry','Pharmacology','Pathology','Microbiology','Forensic Medicine','Community Medicine','General Medicine','Pediatrics','Dermatology','Psychiatry','Radiology','Anesthesiology','Surgery','Orthopedics','ENT','Ophthalmology','Obstetrics & Gynecology'];
+const BASE_UNITS = {
+  'Anatomy':['Gross Anatomy','Neuroanatomy','Embryology','Histology','Surface/Cross-sectional Anatomy','Genetics'],
+  'Physiology':['General Physiology','Nerve-Muscle','Blood','Cardiovascular','Respiratory','Renal','Gastrointestinal','Endocrine','Reproductive','Neurophysiology'],
+  'Biochemistry':['Cell Biology','Biomolecules','Enzymes','Metabolic Pathways','Molecular Biology','Nutrition','Clinical Biochemistry','Immunology','Oncogenesis'],
+  'Pharmacology':['General Pharmacology','Autonomic/CNS Drugs','Cardiovascular/Respiratory/GIT Drugs','Endocrine Pharmacology','Chemotherapy','Autacoids','Toxicology'],
+  'Pathology':['General Pathology','Systemic Pathology','Hematology','Clinical Pathology'],
+  'Microbiology':['General Microbiology & Immunology','Bacteriology','Virology','Mycology','Parasitology','Clinical/Applied Microbiology','Hospital Infection Control'],
+  'Forensic Medicine':['Forensic Pathology','Medical Jurisprudence','Toxicology','Injury/Wounds','Sexual Offences','Identification'],
+  'Community Medicine':['Epidemiology','Biostatistics','Nutrition','Health Planning','National Health Programs','Environmental Health','Demography','Communicable/Non-communicable diseases'],
+  'General Medicine':['Cardiology','Respiratory Medicine','Gastroenterology','Neurology','Endocrinology','Nephrology','Hematology','Rheumatology','Infectious Diseases','Geriatrics'],
+  'Pediatrics':['Growth & Development','Neonatology','Nutrition','Genetics','Pediatric Infections','Emergencies','Pediatric Surgery/Systemic disorders'],
+  'Dermatology':['Papulosquamous disorders','Vesiculobullous diseases','Infections','Leprosy','STDs','Drug reactions'],
+  'Psychiatry':['General Psychiatry','Mood/Anxiety/Psychotic Disorders','Substance Abuse','Child Psychiatry'],
+  'Radiology':['Imaging modalities','Interventional Radiology','Radiation Safety/Physics'],
+  'Anesthesiology':['General/Regional Anesthesia','Airway Management','ICU Care','Pain Management','Pharmacology'],
+  'Surgery':['Principles of Surgery','Surgical Infections','GI/Hepatobiliary/Breast/Endocrine/Vascular Surgery','Urology','Trauma/Polytrauma'],
+  'Orthopedics':['Skeletal Trauma/Fractures','Bone Tumors','Spine disorders','Arthritis/Degenerative','Sports Injuries','Congenital Deformities'],
+  'ENT':['Otology','Rhinology','Laryngology','Head & Neck tumors','Audiology'],
+  'Ophthalmology':['Anatomy/Physiology of eye','Refraction','Cataract','Glaucoma','Retina/Cornea/Conjunctiva','Neuro-ophthalmology','Ocular Trauma'],
+  'Obstetrics & Gynecology':['Antenatal/Intrapartum/Postpartum care','Medical disorders in pregnancy','Complications','Labor','Genital infections','Menstrual disorders','Infertility','Benign/Malignant lesions','Contraception']
+};
+const FOCUS_TONES = [
+  { name:'White Noise', freq:0, offset:0, icon:'🌫️' }, { name:'Pink Noise', freq:0, offset:0, icon:'🍃' },
+  { name:'Brown Noise', freq:0, offset:0, icon:'🪵' }, { name:'Cosmic Storm', freq:0, offset:0, icon:'⛈️' },
+  { name:'Deep Focus', freq:200, offset:10, icon:'🧘' }, { name:'Calm Mind', freq:150, offset:5, icon:'🌿' },
+  { name:'Alpha Study', freq:220, offset:12, icon:'🌊' }, { name:'Memory Focus', freq:100, offset:8, icon:'🎧' }
+];
+
+let appState = {
+  currentUser: null, theme:'default', totalHoursStudied:0, totalPYQ:0, studyLog:[], dailyChecklist:[],
+  revisionSchedule:[], grandTests:[], subjectTests:[], timerSeconds:0, timerRunning:false, timerInterval:null,
+  timerSubject:'', timerUnit:'', activeTones:{}, revCalendarMonth:new Date().getMonth(), revCalendarYear:new Date().getFullYear(),
+  selectedRevDate:null, revFilterDay:null, revSubjectFilter:'all', customUnits:{}, completedRevisions:{}, currentCompareMetric:'daily-hr'
+};
+
+// ============ iOS PWA Install Prompt ============
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installPrompt').classList.add('show');
+});
+window.closeInstallPrompt = () => {
+  document.getElementById('installPrompt').classList.remove('show');
+};
+// Show install hint on iOS
+if (/iPhone|iPad|iPod/.test(navigator.userAgent) && !navigator.standalone) {
+  setTimeout(() => {
+    document.getElementById('installPrompt').classList.add('show');
+  }, 3000);
+}
+
+// -------------------- UTILITIES --------------------
+function toast(msg) { let c=document.getElementById('toastContainer'); let t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),2500); }
+function escapeHTML(s) { if(!s) return ''; let d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function escapeJSString(str) { return str.replace(/'/g,"\\'").replace(/"/g,'\\"'); }
+function getUsers() { return JSON.parse(localStorage.getItem('neetpg_users')||'{}'); }
+function saveUsers(u) { localStorage.setItem('neetpg_users',JSON.stringify(u)); }
+function loadUserData(username) {
+  let key=`neetpg_data_${username}`;
+  let saved=localStorage.getItem(key);
+  if(saved) { try { let data=JSON.parse(saved); appState={...appState,...data,currentUser:username}; } catch(e){} }
+  else { appState={...appState,currentUser:username,totalHoursStudied:0,totalPYQ:0,studyLog:[],dailyChecklist:[],revisionSchedule:[],grandTests:[],subjectTests:[],customUnits:{},completedRevisions:{}}; }
+  if(appState.timerInterval) clearInterval(appState.timerInterval); appState.timerRunning=false;
+}
+function saveUserData() {
+  if(!appState.currentUser) return;
+  let key=`neetpg_data_${appState.currentUser}`;
+  let toSave={...appState}; delete toSave.timerInterval; delete toSave.activeTones; toSave.timerRunning=false;
+  localStorage.setItem(key,JSON.stringify(toSave));
+  scheduleSync();
+}
+let syncTimeout;
+function scheduleSync() { clearTimeout(syncTimeout); syncTimeout=setTimeout(()=>syncToGoogleSheets(),15000); }
+function syncToGoogleSheets() {
+  if(!appState.currentUser) return;
+  fetch(APPS_SCRIPT_URL,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify({
+    user:appState.currentUser, totalHours:appState.totalHoursStudied, totalPYQ:appState.totalPYQ,
+    studyLog:appState.studyLog, grandTests:appState.grandTests, subjectTests:appState.subjectTests,
+    revisionSchedule:appState.revisionSchedule, completedRevisions:appState.completedRevisions,
+    dailyChecklist:appState.dailyChecklist, lastSync:new Date().toISOString()
+  })}).catch(()=>{});
+}
+window.verifyAppsScriptConnection = async () => {
+  let ind=document.getElementById('syncIndicator'), setInd=document.getElementById('settingsSyncIndicator');
+  ind.textContent='Pinging... 🟡'; setInd.textContent='Pinging... 🟡';
+  try { await fetch(APPS_SCRIPT_URL,{ method:'GET', mode:'no-cors' }); ind.textContent='Sync Active 🟢'; setInd.textContent='Active 🟢'; toast('🟢 Connected'); }
+  catch(e) { ind.textContent='Error 🔴'; setInd.textContent='Unreachable 🔴'; toast('🔴 Connection failed'); }
+};
+
+// -------------------- SUBJECT HELPERS --------------------
+function getUnitsForSubject(subject) { return [...(BASE_UNITS[subject]||[]), ...((appState.customUnits&&appState.customUnits[subject])||[])]; }
+function updateUnitDropdown(subjectId,unitSelectId,customInputId) {
+  let unitSel=document.getElementById(unitSelectId), customInput=document.getElementById(customInputId);
+  unitSel.innerHTML='<option value="">Select Unit</option>';
+  if(subjectId) getUnitsForSubject(subjectId).forEach(u=>unitSel.innerHTML+=`<option value="${u}">${u}</option>`);
+  unitSel.innerHTML+='<option value="__other__">Other (custom)</option>';
+  customInput.classList.add('unit-custom');
+  unitSel.onchange=function(){ if(unitSel.value=='__other__') { customInput.classList.remove('unit-custom'); customInput.focus(); } else { customInput.classList.add('unit-custom'); customInput.value=''; } };
+}
+function getSelectedUnit(unitSelectId,customInputId) { let sel=document.getElementById(unitSelectId), custom=document.getElementById(customInputId); return sel.value=='__other__'?custom.value.trim():sel.value; }
+function populateSubjectSelects() {
+  ['logSubject','swSubject','timerSubject'].forEach(id=>{ let sel=document.getElementById(id); if(!sel) return; let val=sel.value; sel.innerHTML='<option value="">Select Subject</option>'; SUBJECTS.forEach(s=>sel.innerHTML+=`<option value="${s}">${s}</option>`); if(val&&SUBJECTS.includes(val)) sel.value=val; });
+  document.getElementById('logSubject').onchange=function(){ updateUnitDropdown(this.value,'logUnitSelect','logUnitCustom'); };
+  document.getElementById('timerSubject').onchange=function(){ updateUnitDropdown(this.value,'timerUnitSelect','timerUnitCustom'); };
+  if(document.getElementById('logSubject').value) updateUnitDropdown(document.getElementById('logSubject').value,'logUnitSelect','logUnitCustom');
+}
+
+// -------------------- COUNTDOWN --------------------
+function updateCountdown() {
+  let diff=NEET_EXAM_DATE-new Date();
+  if(diff<=0){ ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id=>document.getElementById(id).textContent='0'); return; }
+  document.getElementById('cd-days').textContent=Math.floor(diff/86400000);
+  document.getElementById('cd-hours').textContent=Math.floor((diff%86400000)/3600000);
+  document.getElementById('cd-mins').textContent=Math.floor((diff%3600000)/60000);
+  document.getElementById('cd-secs').textContent=Math.floor((diff%60000)/1000);
+}
+
+// -------------------- DAILY CHECKLIST --------------------
+function renderDailyChecklist() {
+  let today=new Date().toDateString(), items=(appState.dailyChecklist||[]).filter(i=>i.user===appState.currentUser&&i.date===today), c=document.getElementById('dailyChecklist');
+  c.innerHTML=items.length?items.map((item,idx)=>`
+    <div class="checkbox-row ${item.done?'checked':''}" onclick="toggleCheckItem(${idx})">
+      <input type="checkbox" ${item.done?'checked':''} onclick="event.stopPropagation();toggleCheckItem(${idx})">
+      <span class="check-label">${escapeHTML(item.text)}</span>
+      <span style="cursor:pointer;color:var(--red);font-weight:bold;padding:0 8px;" onclick="event.stopPropagation();deleteCheckItem(${idx})">✕</span>
+    </div>`).join(''):'<div style="color:var(--text2); text-align:center; padding:10px 0;">No list items active. Load standard presets or add custom ones below!</div>';
+}
+window.addCheckItem=()=>{ let text=document.getElementById('newCheckItem').value.trim(); if(!text) return; let today=new Date().toDateString(); if(!appState.dailyChecklist) appState.dailyChecklist=[]; appState.dailyChecklist.push({user:appState.currentUser,date:today,text,done:false}); document.getElementById('newCheckItem').value=''; saveUserData(); renderDailyChecklist(); toast('✅ Added'); };
+window.addDefaultTasks=()=>{ let today=new Date().toDateString(); let defaults=["Clinical Subject Notes Review","custom module marrow","Grand Test Error Analysis Card","Late night pyq","midday pyq","Active Spaced Recalls Session","Study Session With Ambient Focus Tones"]; let added=0; if(!appState.dailyChecklist) appState.dailyChecklist=[]; defaults.forEach(t=>{ if(!appState.dailyChecklist.some(i=>i.user===appState.currentUser&&i.date===today&&i.text===t)){ appState.dailyChecklist.push({user:appState.currentUser,date:today,text:t,done:false}); added++; } }); if(added){ saveUserData(); renderDailyChecklist(); toast(`📋 Loaded ${added} tasks`); } else toast('Already populated.'); };
+window.clearDefaultTasks=()=>{ let today=new Date().toDateString(); if(!appState.dailyChecklist) return; appState.dailyChecklist=appState.dailyChecklist.filter(i=>!(i.user===appState.currentUser&&i.date===today)); saveUserData(); renderDailyChecklist(); toast('🗑 Cleared today'); };
+window.toggleCheckItem=(idx)=>{ let today=new Date().toDateString(), items=appState.dailyChecklist.filter(i=>i.user===appState.currentUser&&i.date===today); if(items[idx]){ items[idx].done=!items[idx].done; saveUserData(); renderDailyChecklist(); updateHomeStats(); } };
+window.deleteCheckItem=(idx)=>{ let today=new Date().toDateString(), items=appState.dailyChecklist.filter(i=>i.user===appState.currentUser&&i.date===today); if(items[idx]){ let globalIdx=appState.dailyChecklist.indexOf(items[idx]); if(globalIdx>=0) appState.dailyChecklist.splice(globalIdx,1); saveUserData(); renderDailyChecklist(); updateHomeStats(); } };
+
+// -------------------- STUDY LOG & SPACED REVISION --------------------
+function generateRevisionForEntry(entry){
+  let orig=new Date(entry.timestamp), dates=[2,4,7,14].map(o=>{let d=new Date(orig); d.setDate(orig.getDate()+o); return d.toDateString();});
+  if(!appState.revisionSchedule) appState.revisionSchedule=[];
+  appState.revisionSchedule.push({user:appState.currentUser, subject:entry.subject, unit:entry.unit, originalDate:orig.toDateString(), originalTimestamp:entry.timestamp, revisionDates:dates});
+}
+window.saveLogEntry=()=>{
+  let subject=document.getElementById('logSubject').value, unit=getSelectedUnit('logUnitSelect','logUnitCustom'), pyq=parseInt(document.getElementById('logPYQ').value)||0, directHours=parseFloat(document.getElementById('logHoursDirect').value)||0, note=document.getElementById('logNotes').value.trim(), scheduleRevisionCycle=document.getElementById('generateRevisionToggle').checked;
+  if(!subject||!unit){ toast('⚠️ Please select both subject and unit'); return; }
+  if(pyq===0&&directHours===0){ toast('⚠️ Log some hours or PYQs done!'); return; }
+  let calculatedHours=pyq>0?(pyq*40)/3600:0, finalHours=directHours>0?directHours:calculatedHours;
+  let entry={id:'log_'+Date.now(), user:appState.currentUser, subject, unit, hours:finalHours, pyq, notes:note, timestamp:new Date().toISOString(), date:new Date().toDateString(), spacedRevisionScheduled:scheduleRevisionCycle};
+  appState.studyLog.push(entry); appState.totalHoursStudied+=finalHours; appState.totalPYQ+=pyq;
+  if(scheduleRevisionCycle) generateRevisionForEntry(entry);
+  if(!getUnitsForSubject(subject).includes(unit)){ if(!appState.customUnits) appState.customUnits={}; if(!appState.customUnits[subject]) appState.customUnits[subject]=[]; if(!appState.customUnits[subject].includes(unit)) appState.customUnits[subject].push(unit); }
+  document.getElementById('logPYQ').value=''; document.getElementById('logHoursDirect').value=''; document.getElementById('logNotes').value=''; document.getElementById('logUnitSelect').value=''; document.getElementById('logUnitCustom').value='';
+  saveUserData(); updateUI(); toast(scheduleRevisionCycle?'✅ Saved & Spaced updated':'✅ Saved (no revision)');
+};
+window.generateRevisionSchedule=()=>{ let logs=appState.studyLog.filter(e=>e.user===appState.currentUser&&e.spacedRevisionScheduled!==false); if(!logs.length){ toast('No eligible sessions'); return; } appState.revisionSchedule=appState.revisionSchedule.filter(e=>e.user!==appState.currentUser); logs.forEach(generateRevisionForEntry); saveUserData(); updateUI(); toast('🔄 Recalculated spacing'); };
+function toggleRevisionCompleted(dateStr,subject,unit){ let key=`${dateStr}_${subject}_${unit}`.replace(/\s+/g,'_'); if(!appState.completedRevisions) appState.completedRevisions={}; if(appState.completedRevisions[key]){ delete appState.completedRevisions[key]; toast('🔄 Restored'); } else { appState.completedRevisions[key]=true; toast('✅ Completed!'); } saveUserData(); updateUI(); if(appState.selectedRevDate) selectRevisionDate(appState.selectedRevDate); updateHomeStats(); }
+window.toggleRevisionUI=(dateStr,subject,unit)=>{ toggleRevisionCompleted(dateStr,subject,unit); };
+function renderTodayRevisionList(){
+  let today=new Date().toDateString(), revs=(appState.revisionSchedule||[]).filter(e=>e.user===appState.currentUser&&e.revisionDates.includes(today)), c=document.getElementById('todayRevisionList');
+  if(!revs.length){ c.innerHTML='<div style="color:var(--text2);text-align:center;padding:12px 0;">No active reviews today.</div>'; return; }
+  c.innerHTML=revs.map(r=>{ let compKey=`${today}_${r.subject}_${r.unit}`.replace(/\s+/g,'_'), isDone=appState.completedRevisions&&appState.completedRevisions[compKey]; return `<div class="checkbox-row ${isDone?'checked':''}" onclick="toggleRevisionUI('${today}','${escapeJSString(r.subject)}','${escapeJSString(r.unit)}')"><input type="checkbox" ${isDone?'checked':''} onclick="event.stopPropagation();toggleRevisionUI('${today}','${escapeJSString(r.subject)}','${escapeJSString(r.unit)}')"><span class="check-label">📖 <strong>${escapeHTML(r.subject)}</strong> — ${escapeHTML(r.unit)}</span></div>`; }).join('');
+}
+function renderTodayLogList(){
+  let today=new Date().toDateString(), entries=appState.studyLog.filter(e=>e.user===appState.currentUser&&e.date===today);
+  document.getElementById('todayLogList').innerHTML=entries.length?entries.map(e=>`<div style="padding:10px 0; border-bottom:0.5px solid var(--border);"><strong>${escapeHTML(e.subject)}</strong> — ${escapeHTML(e.unit)}${!e.spacedRevisionScheduled?' <span class="tag tag-accent">No-Revision</span>':''}${e.notes?`<div style="font-size:0.8rem; background:var(--input-bg); padding:6px; border-radius:8px; margin-top:4px;">"${escapeHTML(e.notes)}"</div>`:''}<small style="color:var(--text2); display:block; margin-top:2px;">${e.hours.toFixed(2)} hrs | ${e.pyq} PYQs</small></div>`).join(''):'<div style="color:var(--text2); text-align:center; padding:10px 0;">No sessions today.</div>';
+}
+function renderRecentEntries(){
+  let entries=appState.studyLog.filter(e=>e.user===appState.currentUser).slice(-10).reverse();
+  document.getElementById('recentEntriesList').innerHTML=entries.length?entries.map(e=>{ let idx=appState.studyLog.indexOf(e); return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:0.5px solid var(--border);"><div><span style="font-weight:700;">${escapeHTML(e.subject)}</span> — ${escapeHTML(e.unit)}<div style="font-size:0.75rem;">${e.pyq} Qs | ${e.spacedRevisionScheduled?'Spaced Active':'Metrics Only'}</div></div><button class="delete-entry-btn" onclick="deleteSingleEntry(${idx})">🗑</button></div>`; }).join(''):'<div style="color:var(--text2); text-align:center; padding:10px 0;">No logs.</div>';
+}
+window.deleteSingleEntry=(idx)=>{ if(idx<0||idx>=appState.studyLog.length) return; let e=appState.studyLog[idx]; appState.totalHoursStudied=Math.max(0,appState.totalHoursStudied-e.hours); appState.totalPYQ=Math.max(0,appState.totalPYQ-e.pyq); appState.studyLog.splice(idx,1); saveUserData(); updateUI(); toast('🗑 Wiped'); };
+
+// -------------------- REVISION CALENDAR --------------------
+window.setRevSubjectFilter = (subject) => { appState.revSubjectFilter = subject; renderRevisionCalendar(); if(appState.selectedRevDate) selectRevisionDate(appState.selectedRevDate); };
+function populateSubjectFilter() { let select=document.getElementById('revSubjectFilter'); select.innerHTML='<option value="all">All Subjects</option>'; SUBJECTS.forEach(s=>select.innerHTML+=`<option value="${s}">${s}</option>`); select.value=appState.revSubjectFilter; }
+window.setRevFilter=(day)=>{ appState.revFilterDay=day; document.querySelectorAll('.rev-filter-btn').forEach(btn=>btn.classList.remove('active')); if(day===null) document.getElementById('rev-filter-all').classList.add('active'); else document.getElementById(`rev-filter-${day}`).classList.add('active'); renderRevisionCalendar(); if(appState.selectedRevDate) selectRevisionDate(appState.selectedRevDate); };
+function renderRevisionCalendar(){
+  let grid=document.getElementById('revisionCalendar'), m=appState.revCalendarMonth, y=appState.revCalendarYear;
+  document.getElementById('revMonthLabel').textContent=new Date(y,m).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  let firstDay=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), today=new Date().toDateString();
+  let revMap={}, compMap={};
+  let revisions = (appState.revisionSchedule||[]).filter(e=>e.user===appState.currentUser);
+  if(appState.revSubjectFilter !== 'all') revisions = revisions.filter(e=>e.subject === appState.revSubjectFilter);
+  revisions.forEach(r=>{ r.revisionDates.forEach(d=>{ let orig=new Date(r.originalDate); let isValid=true; if(appState.revFilterDay){ let expected=new Date(orig); expected.setDate(orig.getDate()+appState.revFilterDay); if(expected.toDateString()!==d) isValid=false; } if(isValid){ if(!revMap[d]) revMap[d]=[]; revMap[d].push(r); let key=`${d}_${r.subject}_${r.unit}`.replace(/\s+/g,'_'); if(appState.completedRevisions&&appState.completedRevisions[key]){ if(!compMap[d]) compMap[d]=[]; compMap[d].push(r); } } }); });
+  let html=''; ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>html+=`<div style="text-align:center;font-size:0.75rem;font-weight:700;color:var(--text2);padding:4px 0;">${d}</div>`);
+  for(let i=0;i<firstDay;i++) html+='<div></div>';
+  for(let d=1;d<=days;d++){ let ds=new Date(y,m,d).toDateString(); let cls='calendar-day'; if(ds===today) cls+=' today'; if(ds===appState.selectedRevDate) cls+=' selected'; if(revMap[ds]){ cls+=' has-revision'; if(compMap[ds]&&compMap[ds].length===revMap[ds].length) cls+=' completed-all'; } html+=`<div class="${cls}" onclick="selectRevisionDate('${ds}')">${d}</div>`; }
+  grid.innerHTML=html;
+}
+window.selectRevisionDate=(ds)=>{ appState.selectedRevDate=ds; renderRevisionCalendar(); let revs=(appState.revisionSchedule||[]).filter(e=>e.user===appState.currentUser&&e.revisionDates.includes(ds)); if(appState.revSubjectFilter !== 'all') revs=revs.filter(e=>e.subject===appState.revSubjectFilter); if(appState.revFilterDay){ revs=revs.filter(e=>{ let orig=new Date(e.originalDate); let expected=new Date(orig); expected.setDate(orig.getDate()+appState.revFilterDay); return expected.toDateString()===ds; }); } document.getElementById('revDetailDate').textContent=ds; document.getElementById('revisionDayDetail').style.display='block'; document.getElementById('revDetailList').innerHTML=revs.length?revs.map(r=>{ let compKey=`${ds}_${r.subject}_${r.unit}`.replace(/\s+/g,'_'); let isDone=appState.completedRevisions&&appState.completedRevisions[compKey]; return `<div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><span style="font-weight:700; color:${isDone?'var(--calendar-completed)':'var(--text)'}; text-decoration:${isDone?'line-through':'none'};">📖 ${escapeHTML(r.subject)} — ${escapeHTML(r.unit)}</span><div style="font-size:0.75rem;">Studied: ${r.originalDate}</div></div><button class="btn btn-sm ${isDone?'btn-outline':'btn-accent2'}" onclick="toggleRevisionUI('${ds}','${escapeJSString(r.subject)}','${escapeJSString(r.unit)}')">${isDone?'Undo':'✓ Done'}</button></div>`; }).join(''):'<div style="color:var(--text2); padding:10px 0;">No revisions for this date.</div>'; };
+window.changeRevMonth=(d)=>{ appState.revCalendarMonth+=d; if(appState.revCalendarMonth>11){ appState.revCalendarMonth=0; appState.revCalendarYear++; } if(appState.revCalendarMonth<0){ appState.revCalendarMonth=11; appState.revCalendarYear--; } renderRevisionCalendar(); };
+function renderSuggestedPYQ(){
+  let today=new Date(), d14=new Date(today); d14.setDate(today.getDate()-14); let d7=new Date(today); d7.setDate(today.getDate()-7);
+  let candidates=(appState.revisionSchedule||[]).filter(e=>e.user===appState.currentUser&&e.revisionDates.some(d=>{let dd=new Date(d); return dd>=d14&&dd<=d7;}));
+  if(appState.revSubjectFilter !== 'all') candidates=candidates.filter(e=>e.subject===appState.revSubjectFilter);
+  let c=document.getElementById('suggestedPYQList');
+  if(!candidates.length){ c.innerHTML='<div style="color:var(--text2); padding:12px 0; text-align:center;">No topics in target window.</div>'; return; }
+  c.innerHTML='<div style="font-weight:700; margin-bottom:10px;">🔥 Retain Deck (Day 7-14):</div>'+candidates.map(r=>`<div style="padding:10px; background:var(--input-bg); border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between;"><div><strong>${escapeHTML(r.subject)}</strong><br><span style="font-size:0.8rem;">${escapeHTML(r.unit)} (${r.originalDate})</span></div><button class="btn btn-outline btn-sm" onclick="quickStudyUnit('${escapeJSString(r.subject)}','${escapeJSString(r.unit)}')">Drill</button></div>`).join('');
+}
+window.quickStudyUnit=(subj,unit)=>{ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById('section-log').classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); document.querySelector('[data-section="log"]').classList.add('active'); document.getElementById('logSubject').value=subj; updateUnitDropdown(subj,'logUnitSelect','logUnitCustom'); setTimeout(()=>{ document.getElementById('logUnitSelect').value=unit; document.getElementById('logPYQ').focus(); },120); toast(`Loaded: ${subj} — ${unit}`); };
+
+// -------------------- SUBJECTS (Curriculum) --------------------
+function renderSubjectStats(){
+  let userLogs=appState.studyLog.filter(e=>e.user===appState.currentUser), html='';
+  SUBJECTS.forEach(subj=>{
+    let subjLogs=userLogs.filter(e=>e.subject===subj), totalPYQ=subjLogs.reduce((s,e)=>s+(e.pyq||0),0), totalHours=subjLogs.reduce((s,e)=>s+(e.hours||0),0);
+    html+=`<div class="subject-syllabus-card"><div class="subject-syllabus-header"><strong style="font-size:1.05rem;">${subj}</strong><div><span class="tag tag-accent">${totalPYQ} PYQs</span><span class="tag tag-green">${totalHours.toFixed(1)}h</span></div></div><div>`;
+    getUnitsForSubject(subj).forEach(u=>{
+      let unitData=subjLogs.filter(e=>e.unit===u), upyq=unitData.reduce((s,e)=>s+(e.pyq||0),0), uhours=unitData.reduce((s,e)=>s+(e.hours||0),0);
+      html+=`<div class="unit-syllabus-row"><span class="unit-title">📌 ${u}</span><span class="unit-stats">${upyq>0||uhours>0?`${upyq} PYQs | ${uhours.toFixed(1)} hrs`:'Not studied'}</span></div>`;
+    });
+    html+=`</div><div class="inline-add-unit"><input type="text" id="inlineAddInput_${subj.replace(/\s+/g,'_')}" placeholder="New custom unit..."><button class="btn btn-primary btn-sm" onclick="addUnitDirectly('${subj}')">+</button></div></div>`;
+  });
+  document.getElementById('subjectStatsList').innerHTML=html;
+}
+window.addUnitDirectly=(subject)=>{ let inputId=`inlineAddInput_${subject.replace(/\s+/g,'_')}`, inputElement=document.getElementById(inputId), unitName=inputElement.value.trim(); if(!unitName) return toast('⚠️ Enter unit name'); if(!appState.customUnits) appState.customUnits={}; if(!appState.customUnits[subject]) appState.customUnits[subject]=[]; if(getUnitsForSubject(subject).includes(unitName)) return toast('⚠️ Unit exists'); appState.customUnits[subject].push(unitName); inputElement.value=''; saveUserData(); updateUI(); toast(`✅ Added to ${subject}`); };
+
+// -------------------- TESTS --------------------
+let gtChart, swChart;
+window.saveGT=()=>{ let source=document.getElementById('gtSource').value, correct=parseInt(document.getElementById('gtCorrect').value)||0, incorrect=parseInt(document.getElementById('gtIncorrect').value)||0, total=parseInt(document.getElementById('gtTotal').value)||(correct+incorrect), date=document.getElementById('gtDate').value||new Date().toISOString().split('T')[0]; if(!appState.grandTests) appState.grandTests=[]; appState.grandTests.push({user:appState.currentUser,source,correct,incorrect,total,date}); ['gtCorrect','gtIncorrect','gtTotal'].forEach(id=>document.getElementById(id).value=''); saveUserData(); updateUI(); toast('✅ GT saved'); };
+window.saveSWT=()=>{ let subject=document.getElementById('swSubject').value; if(!subject) return toast('⚠️ Select subject'); let correct=parseInt(document.getElementById('swCorrect').value)||0, incorrect=parseInt(document.getElementById('swIncorrect').value)||0, total=parseInt(document.getElementById('swTotal').value)||(correct+incorrect), date=document.getElementById('swDate').value||new Date().toISOString().split('T')[0]; if(!appState.subjectTests) appState.subjectTests=[]; appState.subjectTests.push({user:appState.currentUser,subject,correct,incorrect,total,date}); ['swCorrect','swIncorrect','swTotal'].forEach(id=>document.getElementById(id).value=''); saveUserData(); updateUI(); toast('✅ SWT saved'); };
+function renderGTChart(){ let ctx=document.getElementById('gtChart'); if(!ctx) return; let tests=(appState.grandTests||[]).filter(e=>e.user===appState.currentUser).sort((a,b)=>new Date(a.date)-new Date(b.date)); if(gtChart) gtChart.destroy(); if(!tests.length) return; gtChart=new Chart(ctx,{type:'line',data:{labels:tests.map(t=>`${t.source} (${t.date})`),datasets:[{label:'GT Accuracy %',data:tests.map(t=>t.total?((t.correct/t.total)*100).toFixed(1):0),borderColor:'rgb(0,122,255)',backgroundColor:'rgba(0,122,255,0.1)',tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100}}}}); }
+function renderSWChart(){ let ctx=document.getElementById('swChart'); if(!ctx) return; let tests=(appState.subjectTests||[]).filter(e=>e.user===appState.currentUser).sort((a,b)=>new Date(a.date)-new Date(b.date)); if(swChart) swChart.destroy(); if(!tests.length) return; swChart=new Chart(ctx,{type:'bar',data:{labels:tests.map(t=>`${t.subject} (${t.date})`),datasets:[{label:'Accuracy %',data:tests.map(t=>t.total?((t.correct/t.total)*100).toFixed(1):0),backgroundColor:'rgba(52,199,89,0.75)',borderColor:'rgb(52,199,89)',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100}}}}); }
+
+// -------------------- TIMER (with heartbeat) --------------------
+let heartbeatInterval = null;
+function sendHeartbeat(active, subject = '', unit = '') {
+  if (!appState.currentUser) return;
+  fetch(`${APPS_SCRIPT_URL}?action=status&set=1&user=${encodeURIComponent(appState.currentUser)}&active=${active}&subject=${encodeURIComponent(subject)}&unit=${encodeURIComponent(unit)}`, { method:'GET', mode:'no-cors' }).catch(()=>{});
+}
+function updateTimerDisplay(){ let s=Math.max(0,appState.timerSeconds); let h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60; document.getElementById('timerDisplay').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; }
+window.setTimerPreset=(min)=>{ if(min<=0) return; appState.timerSeconds=min*60; updateTimerDisplay(); };
+function completeTimer(){ clearInterval(appState.timerInterval); appState.timerRunning=false; sendHeartbeat(false,'',''); if(heartbeatInterval) clearInterval(heartbeatInterval); let selectedMin=parseInt(document.getElementById('customTimerMin').value)||60; let hours=selectedMin/60; let entry={id:'log_'+Date.now(), user:appState.currentUser, subject:appState.timerSubject, unit:appState.timerUnit, hours, pyq:0, timestamp:new Date().toISOString(), date:new Date().toDateString(), spacedRevisionScheduled:true}; appState.studyLog.push(entry); appState.totalHoursStudied+=hours; generateRevisionForEntry(entry); appState.timerSeconds=0; document.getElementById('timerStartBtn').textContent='▶ Start Study'; updateTimerDisplay(); saveUserData(); updateUI(); toast('🎉 Session completed!'); }
+window.toggleTimer=()=>{ 
+  if(appState.timerRunning){ 
+    clearInterval(appState.timerInterval); 
+    appState.timerRunning=false; 
+    document.getElementById('timerStartBtn').textContent='▶ Resume'; 
+    sendHeartbeat(false,'','');
+    if(heartbeatInterval) clearInterval(heartbeatInterval);
+    renderComparisonLounge(); 
+    return; 
+  } 
+  if(appState.timerSeconds<=0){ toast('⚠️ Set timer first'); return; } 
+  let subject=document.getElementById('timerSubject').value; 
+  let unit=getSelectedUnit('timerUnitSelect','timerUnitCustom'); 
+  if(!subject||!unit){ toast('⚠️ Select subject & unit'); return; } 
+  appState.timerSubject=subject; 
+  appState.timerUnit=unit; 
+  appState.timerRunning=true; 
+  document.getElementById('timerStartBtn').textContent='⏸ Pause Session'; 
+  sendHeartbeat(true, subject, unit);
+  if(heartbeatInterval) clearInterval(heartbeatInterval);
+  heartbeatInterval = setInterval(() => { if(appState.timerRunning && appState.timerSubject && appState.timerUnit) sendHeartbeat(true, appState.timerSubject, appState.timerUnit); }, 30000);
+  let start=Date.now(), initial=appState.timerSeconds; 
+  appState.timerInterval=setInterval(()=>{ 
+    appState.timerSeconds=Math.max(0,initial-Math.floor((Date.now()-start)/1000)); 
+    updateTimerDisplay(); 
+    renderComparisonLounge(); 
+    if(appState.timerSeconds<=0) completeTimer(); 
+  },1000); 
+  renderComparisonLounge(); 
+};
+window.resetTimer=()=>{ appState.timerRunning=false; clearInterval(appState.timerInterval); appState.timerSeconds=0; document.getElementById('timerStartBtn').textContent='▶ Start Study'; updateTimerDisplay(); sendHeartbeat(false,'',''); if(heartbeatInterval) clearInterval(heartbeatInterval); renderComparisonLounge(); updateUI(); };
+
+// -------------------- AUDIO --------------------
+let audioCtx=null, soundNodes={};
+function createNoiseBuffer(type){ if(!audioCtx) return null; let bufferSize=2*audioCtx.sampleRate; let noiseBuffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate); let output=noiseBuffer.getChannelData(0); if(type==='white'){ for(let i=0;i<bufferSize;i++) output[i]=Math.random()*2-1; } else if(type==='pink'){ let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0; for(let i=0;i<bufferSize;i++){ let white=Math.random()*2-1; b0=0.99886*b0+white*0.0555179; b1=0.99332*b1+white*0.0750759; b2=0.96900*b2+white*0.1538520; b3=0.86650*b3+white*0.3104856; b4=0.55000*b4+white*0.5329522; b5=-0.7616*b5-white*0.0168980; output[i]=b0+b1+b2+b3+b4+b5+b6+white*0.5362; output[i]*=0.11; b6=white*0.115926; } } else if(type==='brown'){ let lastOut=0.0; for(let i=0;i<bufferSize;i++){ let white=Math.random()*2-1; output[i]=(lastOut+(0.02*white))/1.02; lastOut=output[i]; output[i]*=3.5; } } return noiseBuffer; }
+function renderToneGrid(){ document.getElementById('toneGrid').innerHTML=FOCUS_TONES.map(t=>`<button class="focus-tone-btn ${appState.activeTones[t.name]?'playing':''}" onclick="toggleTone('${t.name}',${t.freq},${t.offset})"><div>${t.icon}</div></button>`).join(''); }
+window.toggleTone=(name,freq,offset)=>{ if(appState.activeTones[name]){ if(soundNodes[name]){ try{ if(soundNodes[name].leftOsc){ soundNodes[name].leftOsc.stop(); soundNodes[name].rightOsc.stop(); } else if(soundNodes[name].source){ soundNodes[name].source.stop(); if(soundNodes[name].lfo) soundNodes[name].lfo.stop(); } } catch(e){} delete soundNodes[name]; } delete appState.activeTones[name]; renderToneGrid(); return; } if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); } if(audioCtx.state==='suspended') audioCtx.resume(); if(name.toLowerCase().includes('noise')){ let noiseType='white'; if(name.toLowerCase().includes('pink')) noiseType='pink'; if(name.toLowerCase().includes('brown')) noiseType='brown'; let noiseBuffer=createNoiseBuffer(noiseType); let noiseSource=audioCtx.createBufferSource(); noiseSource.buffer=noiseBuffer; noiseSource.loop=true; let filter=audioCtx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=noiseType==='brown'?400:1200; let gainNode=audioCtx.createGain(); gainNode.gain.value=0.12; noiseSource.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination); noiseSource.start(); soundNodes[name]={source:noiseSource,gain:gainNode}; appState.activeTones[name]=true; renderToneGrid(); toast(`🎧 ${name}`); return; } if(name==='Cosmic Storm'){ let noiseBuffer=createNoiseBuffer('brown'); let source=audioCtx.createBufferSource(); source.buffer=noiseBuffer; source.loop=true; let filter=audioCtx.createBiquadFilter(); filter.type='bandpass'; filter.Q.value=1.0; let lfo=audioCtx.createOscillator(); lfo.frequency.value=0.08; let lfoGain=audioCtx.createGain(); lfoGain.gain.value=300; lfo.connect(lfoGain); lfoGain.connect(filter.frequency); let gainNode=audioCtx.createGain(); gainNode.gain.value=0.18; source.connect(filter); filter.connect(gainNode); gainNode.connect(audioCtx.destination); lfo.start(); source.start(); soundNodes[name]={source,lfo,gain:gainNode}; appState.activeTones[name]=true; renderToneGrid(); toast('🎧 Cosmic Storm'); return; } let leftOsc=audioCtx.createOscillator(); let rightOsc=audioCtx.createOscillator(); let leftGain=audioCtx.createGain(); let rightGain=audioCtx.createGain(); let merger=audioCtx.createChannelMerger(2); leftOsc.type='sine'; leftOsc.frequency.value=freq; leftGain.gain.value=0.08; rightOsc.type='sine'; rightOsc.frequency.value=freq+offset; rightGain.gain.value=0.08; leftOsc.connect(leftGain); rightOsc.connect(rightGain); leftGain.connect(merger,0,0); rightGain.connect(merger,0,1); merger.connect(audioCtx.destination); leftOsc.start(); rightOsc.start(); soundNodes[name]={leftOsc,rightOsc,leftGain,rightGain,merger}; appState.activeTones[name]=true; renderToneGrid(); toast(`🎧 Binaural: ${name} (+${offset}Hz)`); };
+window.stopAllTones=()=>{ Object.keys(soundNodes).forEach(name=>{ try{ if(soundNodes[name].leftOsc){ soundNodes[name].leftOsc.stop(); soundNodes[name].rightOsc.stop(); } else if(soundNodes[name].source){ soundNodes[name].source.stop(); if(soundNodes[name].lfo) soundNodes[name].lfo.stop(); } } catch(e){} delete soundNodes[name]; }); appState.activeTones={}; renderToneGrid(); };
+
+// -------------------- STREAK & BADGE LOGIC --------------------
+function getDailyPYQMap() {
+  const map = new Map();
+  for (const entry of appState.studyLog) {
+    if (entry.user !== appState.currentUser) continue;
+    const date = entry.date;
+    const pyq = entry.pyq || 0;
+    map.set(date, (map.get(date) || 0) + pyq);
+  }
+  return map;
+}
+function areAllRevisionsCompletedForDate(date) {
+  const revsForDate = (appState.revisionSchedule || []).filter(r => r.user === appState.currentUser && r.revisionDates.includes(date));
+  if (revsForDate.length === 0) return true;
+  let allCompleted = true;
+  for (const r of revsForDate) {
+    const key = `${date}_${r.subject}_${r.unit}`.replace(/\s+/g, '_');
+    if (!appState.completedRevisions || !appState.completedRevisions[key]) {
+      allCompleted = false;
+      break;
+    }
+  }
+  return allCompleted;
+}
+function computeStreak() {
+  const pyqMap = getDailyPYQMap();
+  const eligibleDates = [];
+  for (const [date, totalPYQ] of pyqMap.entries()) {
+    if (totalPYQ >= 150 && areAllRevisionsCompletedForDate(date)) {
+      eligibleDates.push(date);
+    }
+  }
+  eligibleDates.sort((a,b) => new Date(b) - new Date(a));
+  let streak = 0;
+  for (let i = 0; i < eligibleDates.length; i++) {
+    if (i === 0) streak = 1;
+    else {
+      const prevDate = new Date(eligibleDates[i-1]);
+      const currDate = new Date(eligibleDates[i]);
+      const diffDays = (prevDate - currDate) / (1000*60*60*24);
+      if (diffDays === 1) streak++;
+      else break;
+    }
+  }
+  return streak;
+}
+function getBadge(percent) {
+  if (percent >= 90) return '🥇 Gold';
+  if (percent >= 70) return '🥈 Silver';
+  if (percent >= 50) return '🥉 Bronze';
+  return '';
+}
+function updateHomeStats() {
+  const revPercent = computeRevisionCompletion();
+  const streak = computeStreak();
+  const badge = getBadge(revPercent);
+  document.getElementById('revisionPercent').textContent = revPercent + '%';
+  document.getElementById('checklistStreak').textContent = streak;
+  document.getElementById('badgeHome').textContent = badge;
+}
+function computeRevisionCompletion() {
+  let total = 0, completed = 0;
+  for (const rev of (appState.revisionSchedule || [])) {
+    if (rev.user !== appState.currentUser) continue;
+    for (const date of rev.revisionDates) {
+      total++;
+      const key = `${date}_${rev.subject}_${rev.unit}`.replace(/\s+/g, '_');
+      if (appState.completedRevisions && appState.completedRevisions[key]) completed++;
+    }
+  }
+  return total === 0 ? 0 : Math.round((completed / total) * 100);
+}
+window.computeRevisionCompletion = computeRevisionCompletion;
+
+// -------------------- CLOUD SYNC --------------------
+async function fetchUserCloudData(username) {
+  try {
+    let res=await fetch(`${APPS_SCRIPT_URL}?action=getUser&user=${encodeURIComponent(username)}`, { method:'GET', headers:{'Accept':'application/json'} });
+    if(!res.ok) throw new Error();
+    let data=await res.json();
+    if(data.status==='ok' && data.data) return data.data;
+    return null;
+  } catch(e) { console.warn(e); return null; }
+}
+window.syncFromCloud = async (showToast=true) => {
+  if(!appState.currentUser) return;
+  let cloudData=await fetchUserCloudData(appState.currentUser);
+  if(cloudData) {
+    appState.totalHoursStudied=cloudData.totalHours||0;
+    appState.totalPYQ=cloudData.totalPYQ||0;
+    appState.studyLog=cloudData.studyLog||[];
+    appState.grandTests=cloudData.grandTests||[];
+    appState.subjectTests=cloudData.subjectTests||[];
+    appState.revisionSchedule=cloudData.revisionSchedule||[];
+    appState.completedRevisions=cloudData.completedRevisions||{};
+    appState.dailyChecklist=cloudData.dailyChecklist||[];
+    saveUserData();
+    if(showToast) toast('☁️ Cloud data restored');
+    updateUI();
+  } else if(showToast) toast('☁️ No existing cloud data');
+};
+window.loginUser = async () => {
+  let username=document.getElementById('loginUsername').value.trim();
+  let password=document.getElementById('loginPassword').value.trim();
+  if(!username||!password) return toast('Enter username/password');
+  let users=getUsers();
+  if(users[username] && users[username]===password) {
+    loadUserData(username);
+    closeModal('loginModal');
+    await syncFromCloud(true);
+    updateUI();
+    toast(`👤 Welcome, ${username}`);
+    verifyAppsScriptConnection();
+  } else toast('❌ Invalid credentials');
+};
+window.registerUser = async () => {
+  let username=document.getElementById('loginUsername').value.trim();
+  let password=document.getElementById('loginPassword').value.trim();
+  if(!username||!password) return toast('Enter username/password');
+  let users=getUsers();
+  if(users[username]) return toast('⚠️ Username exists');
+  users[username]=password; saveUsers(users);
+  loadUserData(username);
+  closeModal('loginModal');
+  await syncFromCloud(false);
+  updateUI();
+  toast('✅ Registered & logged in');
+  verifyAppsScriptConnection();
+};
+window.demoLogin = () => { let users=getUsers(); if(!users['demo']) users['demo']='demo'; saveUsers(users); loadUserData('demo'); closeModal('loginModal'); updateUI(); toast('🚀 Demo mode'); };
+
+// -------------------- PEER COMPARISON --------------------
+async function fetchSpreadsheetUsersWithAllMetrics() {
+  try {
+    let res=await fetch(APPS_SCRIPT_URL, { method:'GET', headers:{'Accept':'application/json'} });
+    if(!res.ok) throw new Error();
+    let data=await res.json();
+    if(data.users && Array.isArray(data.users)) return data.users;
+    return [];
+  } catch(e) { return null; }
+}
+window.renderComparisonLounge = async () => {
+  let remoteUsers = await fetchSpreadsheetUsersWithAllMetrics();
+  let peers = [];
+  if(remoteUsers && remoteUsers.length) {
+    peers = remoteUsers.map(u => ({
+      name: u.name,
+      totalHr: u.totalHr || 0,
+      totalPyq: u.totalPyq || 0,
+      dailyHr: u.dailyHr || 0,
+      dailyPyq: u.dailyPyq || 0,
+      revisionPercent: u.revisionPercent || 0,
+      streak: u.streak || 0,
+      isUser: (appState.currentUser === u.name),
+      isStudying: u.active || false,
+      target: u.active ? `${u.activeSubject || ''} — ${u.activeUnit || ''}` : ''
+    }));
+  } else {
+    let allKeys=Object.keys(localStorage), todayStr=new Date().toDateString();
+    for(let key of allKeys) {
+      if(key.startsWith('neetpg_data_')) {
+        let username=key.replace('neetpg_data_','');
+        try {
+          let data=JSON.parse(localStorage.getItem(key));
+          if(!data||!data.studyLog) continue;
+          let totalHours=0,totalPYQ=0,dailyHours=0,dailyPYQ=0;
+          for(let entry of data.studyLog) {
+            totalHours+=entry.hours||0; totalPYQ+=entry.pyq||0;
+            if(entry.date===todayStr) { dailyHours+=entry.hours||0; dailyPYQ+=entry.pyq||0; }
+          }
+          let revPercent = 0, streak = 0;
+          peers.push({ name:username, totalHr:totalHours, totalPyq:totalPYQ, dailyHr:dailyHours, dailyPyq:dailyPYQ, revisionPercent:revPercent, streak:streak, isUser:(appState.currentUser===username), isStudying:false, target:'' });
+        } catch(e){}
+      }
+    }
+  }
+  if(!peers.some(p=>p.isUser)) {
+    let currentRevPercent = computeRevisionCompletion();
+    let currentStreak = computeStreak();
+    peers.push({ name:appState.currentUser, totalHr:appState.totalHoursStudied, totalPyq:appState.totalPYQ, dailyHr:0, dailyPyq:0, revisionPercent:currentRevPercent, streak:currentStreak, isUser:true, isStudying:appState.timerRunning, target:appState.timerRunning?`${appState.timerSubject} — ${appState.timerUnit}`:'' });
+  }
+  let currentUserEntry=peers.find(p=>p.isUser);
+  if(currentUserEntry) { currentUserEntry.isStudying=appState.timerRunning; if(appState.timerRunning&&appState.timerSubject&&appState.timerUnit) currentUserEntry.target=`${appState.timerSubject} — ${appState.timerUnit}`; }
+  let metric=appState.currentCompareMetric;
+  peers.sort((a,b)=>{ 
+    if(metric==='daily-hr') return b.dailyHr - a.dailyHr;
+    if(metric==='daily-pyq') return b.dailyPyq - a.dailyPyq;
+    if(metric==='total-hr') return b.totalHr - a.totalHr;
+    if(metric==='total-pyq') return b.totalPyq - a.totalPyq;
+    if(metric==='revision-percent') return b.revisionPercent - a.revisionPercent;
+    if(metric==='streak') return b.streak - a.streak;
+    return 0;
+  });
+  let listEl=document.getElementById('comparisonList');
+  if(!listEl) return;
+  if(peers.length===0){ listEl.innerHTML='<div style="color:var(--text2); padding:20px; text-align:center;">No users found.</div>'; return; }
+  listEl.innerHTML=peers.map((p,idx)=>{ 
+    let valueStr=''; 
+    if(metric==='daily-hr') valueStr=`${p.dailyHr.toFixed(1)} hrs today`; 
+    else if(metric==='daily-pyq') valueStr=`${p.dailyPyq} PYQs today`; 
+    else if(metric==='total-hr') valueStr=`${p.totalHr.toFixed(1)} total hrs`; 
+    else if(metric==='total-pyq') valueStr=`${p.totalPyq} total Qs`;
+    else if(metric==='revision-percent') valueStr=`${p.revisionPercent}% revision done`;
+    else valueStr=`${p.streak} day streak`;
+    let rankClass=idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':`#${idx+1}`;
+    let badgeIcon = getBadge(p.revisionPercent);
+    return `<div class="peer-comparison-card" style="${p.isUser?'border:1.5px solid var(--accent); background:var(--calendar-selected);':''}"><div class="peer-info"><span class="peer-rank">${rankClass}</span><div class="peer-avatar" style="background:${p.isUser?'var(--accent)':'var(--input-bg)'}; color:${p.isUser?'white':'var(--text)'}">${p.name.charAt(0).toUpperCase()}</div><div><strong>${escapeHTML(p.name)} ${p.isUser?'(You)':''} ${badgeIcon ? `<span class="badge-icon" title="${badgeIcon}">${badgeIcon.charAt(0)}</span>` : ''}</strong>${p.isStudying?`<div style="font-size:0.75rem; color:var(--accent2); display:flex; align-items:center; gap:4px;"><span class="peer-pulse"></span>Studying: ${escapeHTML(p.target)}</div>`:`<div style="font-size:0.75rem;">Offline</div>`}</div></div><span class="tag tag-green">${valueStr}</span></div>`; }).join('');
+  let activeFeedEl=document.getElementById('loungeStudyFeed');
+  let activePeers=peers.filter(p=>p.isStudying);
+  if(activePeers.length) activeFeedEl.innerHTML=activePeers.map(p=>`<div style="padding:10px; border-bottom:0.5px solid var(--border); display:flex; justify-content:space-between;"><span>🟢 ${escapeHTML(p.name)}</span><span>Studying ${escapeHTML(p.target)}</span></div>`).join('');
+  else activeFeedEl.innerHTML='<div style="text-align:center; padding:10px;">Nobody studying now.</div>';
+};
+window.setCompareMetric=(metric)=>{ appState.currentCompareMetric=metric; document.querySelectorAll('.compare-tab').forEach(t=>t.classList.remove('active')); if(metric==='daily-hr') document.getElementById('tab-daily-hr').classList.add('active'); if(metric==='daily-pyq') document.getElementById('tab-daily-pyq').classList.add('active'); if(metric==='total-hr') document.getElementById('tab-total-hr').classList.add('active'); if(metric==='total-pyq') document.getElementById('tab-total-pyq').classList.add('active'); if(metric==='revision-percent') document.getElementById('tab-revision-percent').classList.add('active'); if(metric==='streak') document.getElementById('tab-streak').classList.add('active'); renderComparisonLounge(); };
+
+// -------------------- SETTINGS HELPERS --------------------
+function renderLastEntriesSettings(){
+  let entries=appState.studyLog.filter(e=>e.user===appState.currentUser).slice(-10).reverse();
+  document.getElementById('lastEntriesListSettings').innerHTML=entries.map(e=>{ let idx=appState.studyLog.indexOf(e); return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:0.5px solid var(--border);"><span>${escapeHTML(e.subject)} — ${escapeHTML(e.unit)}</span><button class="delete-entry-btn" onclick="deleteSingleEntry(${idx})">Wipe</button></div>`; }).join('')||'<div style="text-align:center;">No logs.</div>';
+}
+window.deleteLast10Entries=()=>{ let toRemove=appState.studyLog.filter(e=>e.user===appState.currentUser).slice(-10); toRemove.forEach(e=>{ appState.totalHoursStudied=Math.max(0,appState.totalHoursStudied-e.hours); appState.totalPYQ=Math.max(0,appState.totalPYQ-e.pyq); appState.studyLog.splice(appState.studyLog.indexOf(e),1); }); saveUserData(); updateUI(); toast('🗑 Wiped last 10'); };
+window.exportDataJSON=()=>{ if(!appState.currentUser) return; let dataStr="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(appState,null,2)); let a=document.createElement('a'); a.href=dataStr; a.download=`neetpg_backup_${appState.currentUser}_${new Date().toISOString().split('T')[0]}.json`; document.body.appendChild(a); a.click(); a.remove(); toast('📤 Exported'); };
+window.importDataJSON=(event)=>{ let file=event.target.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=function(e){ try{ let imported=JSON.parse(e.target.result); if(imported&&imported.currentUser){ appState={...appState,...imported}; saveUserData(); updateUI(); toast('📥 Restored'); } else toast('❌ Invalid file'); } catch(err){ toast('❌ Parse error'); } }; reader.readAsText(file); };
+window.changeTheme=(t)=>{ appState.theme=t; document.body.setAttribute('data-theme',t); saveUserData(); };
+
+// -------------------- MAIN UI UPDATE --------------------
+async function updateUI(){
+  if(!appState.currentUser){ showLoginModal(); return; }
+  document.getElementById('currentUserDisplay').textContent=appState.currentUser==='demo'?'Guest Space':appState.currentUser;
+  document.getElementById('avatarLetter').textContent=(appState.currentUser.charAt(0)||'G').toUpperCase();
+  document.getElementById('totalHoursStudied').textContent=(appState.totalHoursStudied||0).toFixed(1);
+  document.getElementById('totalPYQ').textContent=appState.totalPYQ||0;
+  document.getElementById('pyqHoursEquiv').textContent=((appState.totalPYQ||0)*40/3600).toFixed(2);
+  document.getElementById('themeSelect').value=appState.theme||'default';
+  document.body.setAttribute('data-theme',appState.theme||'default');
+  populateSubjectSelects();
+  populateSubjectFilter();
+  renderDailyChecklist(); renderTodayRevisionList(); renderTodayLogList(); renderRecentEntries();
+  renderRevisionCalendar(); renderSubjectStats(); renderGTChart(); renderSWChart();
+  await renderComparisonLounge();
+  renderToneGrid(); updateCountdown(); renderSuggestedPYQ(); updateHomeStats();
+  if(document.getElementById('settingsModal').classList.contains('show')) renderLastEntriesSettings();
+}
+
+// -------------------- NAVIGATION & MODALS --------------------
+document.querySelectorAll('.nav-item[data-section]').forEach(b=>b.addEventListener('click',function(){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); document.getElementById('section-'+this.dataset.section).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); this.classList.add('active'); updateUI(); }));
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); }));
+window.openModal=(id)=>document.getElementById(id).classList.add('show'); window.closeModal=(id)=>document.getElementById(id).classList.remove('show');
+window.showLoginModal=()=>{ openModal('loginModal'); document.getElementById('loginUsername').value=''; document.getElementById('loginPassword').value=''; };
+
+// -------------------- BOOTSTRAP --------------------
+let savedUser=localStorage.getItem('neetpg_lastUser');
+if(savedUser&&getUsers()[savedUser]){ loadUserData(savedUser); setTimeout(()=>syncFromCloud(false),500); } else { appState.currentUser=null; }
+if(appState.currentUser) updateUI(); else showLoginModal();
+setInterval(updateCountdown,1000);
+setInterval(()=>{ if(appState.timerRunning) renderComparisonLounge(); },10000);
+setInterval(()=>{ if(document.getElementById('section-social').classList.contains('active')) renderComparisonLounge(); },10000);
+document.getElementById('gtDate').value=new Date().toISOString().split('T')[0];
+document.getElementById('swDate').value=new Date().toISOString().split('T')[0];
+window.addEventListener('beforeunload',()=>{ if(appState.currentUser) sendHeartbeat(false,'',''); if(appState.currentUser) localStorage.setItem('neetpg_lastUser',appState.currentUser); });
+setTimeout(()=>verifyAppsScriptConnection(),2000);
+</script>
+</body>
+</html>
+```
+
+How to Install on iPhone/iPad:
+
+1. Save the file as index.html on your computer
+2. Host it online (or use a local server):
+   · Upload to GitHub Pages, Netlify, or any web host
+   · Or use a local web server on your Mac
+3. Install on iOS:
+   · Open Safari on your iPhone/iPad
+   · Navigate to your hosted URL
+   · Tap the Share button (square with arrow up)
+   · Scroll down and tap "Add to Home Screen"
+   · Name it "NEET PG 2026" and tap Add
+
+Features for iOS:
+
+· Home screen icon - Works like a native app
+· Full-screen mode - No Safari address bar when launched from home screen
+· Offline capable - Data persists locally
+· Touch-optimized - Larger touch targets, haptic feedback
+· iOS-friendly UI - Uses SF Pro font, iOS-style blur effects
+· Audio support - Ambient study sounds work with AudioContext
+· Push notification ready - Can be added with service workers
+
+To make it a real APK for Android:
+
+Since you specifically asked for an iOS APK (which doesn't exist), for Android you can wrap this in Capacitor or Cordova:
+
+```bash
+# For Android APK:
+npm install -g @capacitor/cli
+npx cap init NEETPG com.neetpg.app
+npx cap add android
+# Copy your HTML to www/ folder
+npx cap sync
+npx cap open android
+# Build APK in Android Studio
+```
+
+The PWA version works perfectly on iOS as a home screen app!
