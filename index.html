@@ -1,8 +1,4 @@
-I'll convert this NEET PG study tracker web app into an iOS-ready format. Since iOS doesn't support APK (that's Android), I'll create a Progressive Web App (PWA) that can be installed on iOS devices directly from Safari.
 
-Here's the converted version with iOS PWA capabilities:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -866,44 +862,3 @@ setTimeout(()=>verifyAppsScriptConnection(),2000);
 </script>
 </body>
 </html>
-```
-
-How to Install on iPhone/iPad:
-
-1. Save the file as index.html on your computer
-2. Host it online (or use a local server):
-   · Upload to GitHub Pages, Netlify, or any web host
-   · Or use a local web server on your Mac
-3. Install on iOS:
-   · Open Safari on your iPhone/iPad
-   · Navigate to your hosted URL
-   · Tap the Share button (square with arrow up)
-   · Scroll down and tap "Add to Home Screen"
-   · Name it "NEET PG 2026" and tap Add
-
-Features for iOS:
-
-· Home screen icon - Works like a native app
-· Full-screen mode - No Safari address bar when launched from home screen
-· Offline capable - Data persists locally
-· Touch-optimized - Larger touch targets, haptic feedback
-· iOS-friendly UI - Uses SF Pro font, iOS-style blur effects
-· Audio support - Ambient study sounds work with AudioContext
-· Push notification ready - Can be added with service workers
-
-To make it a real APK for Android:
-
-Since you specifically asked for an iOS APK (which doesn't exist), for Android you can wrap this in Capacitor or Cordova:
-
-```bash
-# For Android APK:
-npm install -g @capacitor/cli
-npx cap init NEETPG com.neetpg.app
-npx cap add android
-# Copy your HTML to www/ folder
-npx cap sync
-npx cap open android
-# Build APK in Android Studio
-```
-
-The PWA version works perfectly on iOS as a home screen app!
